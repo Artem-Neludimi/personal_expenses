@@ -3,57 +3,49 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-mixin _$ConvertationDaoMixin on DatabaseAccessor<AppDatabase> {
-  $ConvertationsTable get convertations => attachedDatabase.convertations;
+mixin _$ExpenseDaoMixin on DatabaseAccessor<AppDatabase> {
+  $ExpensesTable get expenses => attachedDatabase.expenses;
 }
 
-class $ConvertationsTable extends Convertations
-    with TableInfo<$ConvertationsTable, Convertation> {
+class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $ConvertationsTable(this.attachedDatabase, [this._alias]);
+  $ExpensesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _name1Meta = const VerificationMeta('name1');
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String> name1 = GeneratedColumn<String>(
-      'name1', aliasedName, false,
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _name2Meta = const VerificationMeta('name2');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
-  late final GeneratedColumn<String> name2 = GeneratedColumn<String>(
-      'name2', aliasedName, false,
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+      'type', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _value1Meta = const VerificationMeta('value1');
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
-  late final GeneratedColumn<int> value1 = GeneratedColumn<int>(
-      'value1', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _value2Meta = const VerificationMeta('value2');
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+      'date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
-  late final GeneratedColumn<int> value2 = GeneratedColumn<int>(
-      'value2', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _formulaMeta =
-      const VerificationMeta('formula');
-  @override
-  late final GeneratedColumn<int> formula = GeneratedColumn<int>(
-      'formula', aliasedName, false,
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+      'amount', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name1, name2, value1, value2, formula];
+  List<GeneratedColumn> get $columns => [id, name, type, date, amount];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'convertations';
+  static const String $name = 'expenses';
   @override
-  VerificationContext validateIntegrity(Insertable<Convertation> instance,
+  VerificationContext validateIntegrity(Insertable<Expense> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -62,35 +54,29 @@ class $ConvertationsTable extends Convertations
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('name1')) {
+    if (data.containsKey('name')) {
       context.handle(
-          _name1Meta, name1.isAcceptableOrUnknown(data['name1']!, _name1Meta));
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
-      context.missing(_name1Meta);
+      context.missing(_nameMeta);
     }
-    if (data.containsKey('name2')) {
+    if (data.containsKey('type')) {
       context.handle(
-          _name2Meta, name2.isAcceptableOrUnknown(data['name2']!, _name2Meta));
+          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
     } else if (isInserting) {
-      context.missing(_name2Meta);
+      context.missing(_typeMeta);
     }
-    if (data.containsKey('value1')) {
-      context.handle(_value1Meta,
-          value1.isAcceptableOrUnknown(data['value1']!, _value1Meta));
+    if (data.containsKey('date')) {
+      context.handle(
+          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
     } else if (isInserting) {
-      context.missing(_value1Meta);
+      context.missing(_dateMeta);
     }
-    if (data.containsKey('value2')) {
-      context.handle(_value2Meta,
-          value2.isAcceptableOrUnknown(data['value2']!, _value2Meta));
+    if (data.containsKey('amount')) {
+      context.handle(_amountMeta,
+          amount.isAcceptableOrUnknown(data['amount']!, _amountMeta));
     } else if (isInserting) {
-      context.missing(_value2Meta);
-    }
-    if (data.containsKey('formula')) {
-      context.handle(_formulaMeta,
-          formula.isAcceptableOrUnknown(data['formula']!, _formulaMeta));
-    } else if (isInserting) {
-      context.missing(_formulaMeta);
+      context.missing(_amountMeta);
     }
     return context;
   }
@@ -98,77 +84,70 @@ class $ConvertationsTable extends Convertations
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
-  Convertation map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Expense map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Convertation(
+    return Expense(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      name1: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name1'])!,
-      name2: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name2'])!,
-      value1: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}value1'])!,
-      value2: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}value2'])!,
-      formula: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}formula'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      type: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
+      date: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      amount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}amount'])!,
     );
   }
 
   @override
-  $ConvertationsTable createAlias(String alias) {
-    return $ConvertationsTable(attachedDatabase, alias);
+  $ExpensesTable createAlias(String alias) {
+    return $ExpensesTable(attachedDatabase, alias);
   }
 }
 
-class Convertation extends DataClass implements Insertable<Convertation> {
+class Expense extends DataClass implements Insertable<Expense> {
   final String id;
-  final String name1;
-  final String name2;
-  final int value1;
-  final int value2;
-  final int formula;
-  const Convertation(
+  final String name;
+  final String type;
+  final DateTime date;
+  final int amount;
+  const Expense(
       {required this.id,
-      required this.name1,
-      required this.name2,
-      required this.value1,
-      required this.value2,
-      required this.formula});
+      required this.name,
+      required this.type,
+      required this.date,
+      required this.amount});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['name1'] = Variable<String>(name1);
-    map['name2'] = Variable<String>(name2);
-    map['value1'] = Variable<int>(value1);
-    map['value2'] = Variable<int>(value2);
-    map['formula'] = Variable<int>(formula);
+    map['name'] = Variable<String>(name);
+    map['type'] = Variable<String>(type);
+    map['date'] = Variable<DateTime>(date);
+    map['amount'] = Variable<int>(amount);
     return map;
   }
 
-  ConvertationsCompanion toCompanion(bool nullToAbsent) {
-    return ConvertationsCompanion(
+  ExpensesCompanion toCompanion(bool nullToAbsent) {
+    return ExpensesCompanion(
       id: Value(id),
-      name1: Value(name1),
-      name2: Value(name2),
-      value1: Value(value1),
-      value2: Value(value2),
-      formula: Value(formula),
+      name: Value(name),
+      type: Value(type),
+      date: Value(date),
+      amount: Value(amount),
     );
   }
 
-  factory Convertation.fromJson(Map<String, dynamic> json,
+  factory Expense.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Convertation(
+    return Expense(
       id: serializer.fromJson<String>(json['id']),
-      name1: serializer.fromJson<String>(json['name1']),
-      name2: serializer.fromJson<String>(json['name2']),
-      value1: serializer.fromJson<int>(json['value1']),
-      value2: serializer.fromJson<int>(json['value2']),
-      formula: serializer.fromJson<int>(json['formula']),
+      name: serializer.fromJson<String>(json['name']),
+      type: serializer.fromJson<String>(json['type']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      amount: serializer.fromJson<int>(json['amount']),
     );
   }
   @override
@@ -176,122 +155,109 @@ class Convertation extends DataClass implements Insertable<Convertation> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'name1': serializer.toJson<String>(name1),
-      'name2': serializer.toJson<String>(name2),
-      'value1': serializer.toJson<int>(value1),
-      'value2': serializer.toJson<int>(value2),
-      'formula': serializer.toJson<int>(formula),
+      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(type),
+      'date': serializer.toJson<DateTime>(date),
+      'amount': serializer.toJson<int>(amount),
     };
   }
 
-  Convertation copyWith(
+  Expense copyWith(
           {String? id,
-          String? name1,
-          String? name2,
-          int? value1,
-          int? value2,
-          int? formula}) =>
-      Convertation(
+          String? name,
+          String? type,
+          DateTime? date,
+          int? amount}) =>
+      Expense(
         id: id ?? this.id,
-        name1: name1 ?? this.name1,
-        name2: name2 ?? this.name2,
-        value1: value1 ?? this.value1,
-        value2: value2 ?? this.value2,
-        formula: formula ?? this.formula,
+        name: name ?? this.name,
+        type: type ?? this.type,
+        date: date ?? this.date,
+        amount: amount ?? this.amount,
       );
   @override
   String toString() {
-    return (StringBuffer('Convertation(')
+    return (StringBuffer('Expense(')
           ..write('id: $id, ')
-          ..write('name1: $name1, ')
-          ..write('name2: $name2, ')
-          ..write('value1: $value1, ')
-          ..write('value2: $value2, ')
-          ..write('formula: $formula')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('date: $date, ')
+          ..write('amount: $amount')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name1, name2, value1, value2, formula);
+  int get hashCode => Object.hash(id, name, type, date, amount);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Convertation &&
+      (other is Expense &&
           other.id == this.id &&
-          other.name1 == this.name1 &&
-          other.name2 == this.name2 &&
-          other.value1 == this.value1 &&
-          other.value2 == this.value2 &&
-          other.formula == this.formula);
+          other.name == this.name &&
+          other.type == this.type &&
+          other.date == this.date &&
+          other.amount == this.amount);
 }
 
-class ConvertationsCompanion extends UpdateCompanion<Convertation> {
+class ExpensesCompanion extends UpdateCompanion<Expense> {
   final Value<String> id;
-  final Value<String> name1;
-  final Value<String> name2;
-  final Value<int> value1;
-  final Value<int> value2;
-  final Value<int> formula;
+  final Value<String> name;
+  final Value<String> type;
+  final Value<DateTime> date;
+  final Value<int> amount;
   final Value<int> rowid;
-  const ConvertationsCompanion({
+  const ExpensesCompanion({
     this.id = const Value.absent(),
-    this.name1 = const Value.absent(),
-    this.name2 = const Value.absent(),
-    this.value1 = const Value.absent(),
-    this.value2 = const Value.absent(),
-    this.formula = const Value.absent(),
+    this.name = const Value.absent(),
+    this.type = const Value.absent(),
+    this.date = const Value.absent(),
+    this.amount = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  ConvertationsCompanion.insert({
+  ExpensesCompanion.insert({
     required String id,
-    required String name1,
-    required String name2,
-    required int value1,
-    required int value2,
-    required int formula,
+    required String name,
+    required String type,
+    required DateTime date,
+    required int amount,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        name1 = Value(name1),
-        name2 = Value(name2),
-        value1 = Value(value1),
-        value2 = Value(value2),
-        formula = Value(formula);
-  static Insertable<Convertation> custom({
+        name = Value(name),
+        type = Value(type),
+        date = Value(date),
+        amount = Value(amount);
+  static Insertable<Expense> custom({
     Expression<String>? id,
-    Expression<String>? name1,
-    Expression<String>? name2,
-    Expression<int>? value1,
-    Expression<int>? value2,
-    Expression<int>? formula,
+    Expression<String>? name,
+    Expression<String>? type,
+    Expression<DateTime>? date,
+    Expression<int>? amount,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (name1 != null) 'name1': name1,
-      if (name2 != null) 'name2': name2,
-      if (value1 != null) 'value1': value1,
-      if (value2 != null) 'value2': value2,
-      if (formula != null) 'formula': formula,
+      if (name != null) 'name': name,
+      if (type != null) 'type': type,
+      if (date != null) 'date': date,
+      if (amount != null) 'amount': amount,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
-  ConvertationsCompanion copyWith(
+  ExpensesCompanion copyWith(
       {Value<String>? id,
-      Value<String>? name1,
-      Value<String>? name2,
-      Value<int>? value1,
-      Value<int>? value2,
-      Value<int>? formula,
+      Value<String>? name,
+      Value<String>? type,
+      Value<DateTime>? date,
+      Value<int>? amount,
       Value<int>? rowid}) {
-    return ConvertationsCompanion(
+    return ExpensesCompanion(
       id: id ?? this.id,
-      name1: name1 ?? this.name1,
-      name2: name2 ?? this.name2,
-      value1: value1 ?? this.value1,
-      value2: value2 ?? this.value2,
-      formula: formula ?? this.formula,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      date: date ?? this.date,
+      amount: amount ?? this.amount,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -302,20 +268,17 @@ class ConvertationsCompanion extends UpdateCompanion<Convertation> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (name1.present) {
-      map['name1'] = Variable<String>(name1.value);
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
     }
-    if (name2.present) {
-      map['name2'] = Variable<String>(name2.value);
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
     }
-    if (value1.present) {
-      map['value1'] = Variable<int>(value1.value);
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
     }
-    if (value2.present) {
-      map['value2'] = Variable<int>(value2.value);
-    }
-    if (formula.present) {
-      map['formula'] = Variable<int>(formula.value);
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -325,13 +288,12 @@ class ConvertationsCompanion extends UpdateCompanion<Convertation> {
 
   @override
   String toString() {
-    return (StringBuffer('ConvertationsCompanion(')
+    return (StringBuffer('ExpensesCompanion(')
           ..write('id: $id, ')
-          ..write('name1: $name1, ')
-          ..write('name2: $name2, ')
-          ..write('value1: $value1, ')
-          ..write('value2: $value2, ')
-          ..write('formula: $formula, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('date: $date, ')
+          ..write('amount: $amount, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -340,12 +302,11 @@ class ConvertationsCompanion extends UpdateCompanion<Convertation> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  late final $ConvertationsTable convertations = $ConvertationsTable(this);
-  late final ConvertationDao convertationDao =
-      ConvertationDao(this as AppDatabase);
+  late final $ExpensesTable expenses = $ExpensesTable(this);
+  late final ExpenseDao expenseDao = ExpenseDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [convertations];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [expenses];
 }
