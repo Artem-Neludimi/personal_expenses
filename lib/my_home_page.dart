@@ -137,6 +137,7 @@ enum ExpenseType {
   transport,
   bills,
   entertainment,
+  technic,
   other,
   ;
 
@@ -146,6 +147,7 @@ enum ExpenseType {
         'transport' => ExpenseType.transport,
         'bills' => ExpenseType.bills,
         'entertainment' => ExpenseType.entertainment,
+        'technic' => ExpenseType.technic,
         'other' => ExpenseType.other,
         _ => ExpenseType.other,
       };
@@ -156,6 +158,7 @@ enum ExpenseType {
         ExpenseType.transport => 'Transport',
         ExpenseType.bills => 'Bills',
         ExpenseType.entertainment => 'Entertainment',
+        ExpenseType.technic => 'Technic',
         ExpenseType.other => 'Other',
       };
 }
