@@ -19,6 +19,7 @@ class MonthExpenses extends StatelessWidget {
         itemCount: expenses.length,
         padding: const EdgeInsets.all(16),
         itemBuilder: (BuildContext context, int index) {
+          final date = expenses[index].date;
           return Dismissible(
             key: Key(expenses[index].id),
             confirmDismiss: (direction) async {
@@ -48,8 +49,14 @@ class MonthExpenses extends StatelessWidget {
             child: Card(
               child: ListTile(
                 title: Text(expenses[index].name),
-                subtitle: Text(expenses[index].type),
-                trailing: Text(expenses[index].amount.toString()),
+                subtitle: Row(
+                  children: [
+                    Text(expenses[index].type),
+                    const SizedBox(width: 8),
+                    Text('${date.month}/${date.day}/${date.year}'),
+                  ],
+                ),
+                trailing: Text('${expenses[index].amount} \$'),
               ),
             ),
           );
