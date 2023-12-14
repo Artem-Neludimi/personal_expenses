@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import 'add_expenses.dart';
 import 'db/database.dart';
 import 'main.dart';
 
@@ -29,6 +30,7 @@ class MyHomePage extends StatelessWidget {
 
               return ListView.builder(
                 itemCount: groupedExpenses.length,
+                reverse: true,
                 padding: const EdgeInsets.only(bottom: 16),
                 itemBuilder: (BuildContext context, int index) {
                   return groupedExpenses[index];
@@ -38,13 +40,7 @@ class MyHomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          db.expenseDao.insertExpense(ExpensesCompanion.insert(
-            id: UniqueKey().toString(),
-            name: 'fnew;',
-            type: ExpenseType.other.name,
-            amount: 100,
-            date: DateTime.now(),
-          ));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddExpenses()));
         },
         child: const Icon(Icons.add),
       ),
@@ -144,7 +140,7 @@ enum ExpenseType {
   other,
   ;
 
-  factory ExpenseType.fromString(String value) => switch (value) {
+  factory ExpenseType.fromString(String value) => switch (value.toLowerCase()) {
         'food' => ExpenseType.food,
         'junkFood' => ExpenseType.junkFood,
         'transport' => ExpenseType.transport,
@@ -163,17 +159,3 @@ enum ExpenseType {
         ExpenseType.other => 'Other',
       };
 }
-// [
-//                   OrdinalGroup(
-//                     id: '1',
-//                     data: [
-//                       for (var element in ExpenseType.values)
-//                         OrdinalData(
-//                           domain: element.name,
-//                           measure: expenses
-//                               .where((element2) => element2.type == element.name)
-//                               .fold<double>(0, (previousValue, element) => previousValue + element.amount),
-//                         )
-//                     ],
-//                   )
-//                 ],

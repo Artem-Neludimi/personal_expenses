@@ -7,7 +7,7 @@ class Expenses extends Table {
   TextColumn get name => text()();
   TextColumn get type => text()();
   DateTimeColumn get date => dateTime()();
-  IntColumn get amount => integer()();
+  RealColumn get amount => real()();
 }
 
 @DriftAccessor(tables: [Expenses])

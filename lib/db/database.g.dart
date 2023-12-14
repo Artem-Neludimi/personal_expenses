@@ -34,9 +34,9 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
-  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
       'amount', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.double, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, name, type, date, amount];
   @override
@@ -96,7 +96,7 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
       date: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
       amount: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}amount'])!,
+          .read(DriftSqlType.double, data['${effectivePrefix}amount'])!,
     );
   }
 
@@ -111,7 +111,7 @@ class Expense extends DataClass implements Insertable<Expense> {
   final String name;
   final String type;
   final DateTime date;
-  final int amount;
+  final double amount;
   const Expense(
       {required this.id,
       required this.name,
@@ -125,7 +125,7 @@ class Expense extends DataClass implements Insertable<Expense> {
     map['name'] = Variable<String>(name);
     map['type'] = Variable<String>(type);
     map['date'] = Variable<DateTime>(date);
-    map['amount'] = Variable<int>(amount);
+    map['amount'] = Variable<double>(amount);
     return map;
   }
 
@@ -147,7 +147,7 @@ class Expense extends DataClass implements Insertable<Expense> {
       name: serializer.fromJson<String>(json['name']),
       type: serializer.fromJson<String>(json['type']),
       date: serializer.fromJson<DateTime>(json['date']),
-      amount: serializer.fromJson<int>(json['amount']),
+      amount: serializer.fromJson<double>(json['amount']),
     );
   }
   @override
@@ -158,7 +158,7 @@ class Expense extends DataClass implements Insertable<Expense> {
       'name': serializer.toJson<String>(name),
       'type': serializer.toJson<String>(type),
       'date': serializer.toJson<DateTime>(date),
-      'amount': serializer.toJson<int>(amount),
+      'amount': serializer.toJson<double>(amount),
     };
   }
 
@@ -167,7 +167,7 @@ class Expense extends DataClass implements Insertable<Expense> {
           String? name,
           String? type,
           DateTime? date,
-          int? amount}) =>
+          double? amount}) =>
       Expense(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -205,7 +205,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
   final Value<String> name;
   final Value<String> type;
   final Value<DateTime> date;
-  final Value<int> amount;
+  final Value<double> amount;
   final Value<int> rowid;
   const ExpensesCompanion({
     this.id = const Value.absent(),
@@ -220,7 +220,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     required String name,
     required String type,
     required DateTime date,
-    required int amount,
+    required double amount,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         name = Value(name),
@@ -232,7 +232,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     Expression<String>? name,
     Expression<String>? type,
     Expression<DateTime>? date,
-    Expression<int>? amount,
+    Expression<double>? amount,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -250,7 +250,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
       Value<String>? name,
       Value<String>? type,
       Value<DateTime>? date,
-      Value<int>? amount,
+      Value<double>? amount,
       Value<int>? rowid}) {
     return ExpensesCompanion(
       id: id ?? this.id,
@@ -278,7 +278,7 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
       map['date'] = Variable<DateTime>(date.value);
     }
     if (amount.present) {
-      map['amount'] = Variable<int>(amount.value);
+      map['amount'] = Variable<double>(amount.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
