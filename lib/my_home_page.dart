@@ -100,6 +100,7 @@ class _ChartState extends State<_Chart> {
               .fold<double>(0, (previousValue, element) => previousValue + element.amount),
         )
     ];
+    final total = widget.expenses.fold<double>(0, (previousValue, element) => previousValue + element.amount);
 
     return Card(
       elevation: 5,
@@ -116,12 +117,10 @@ class _ChartState extends State<_Chart> {
                   dataSource: data,
                   xValueMapper: (_ChartData data, _) => data.x,
                   yValueMapper: (_ChartData data, _) => data.y,
-                  name: widget.date,
                 )
               ],
             ),
-            Text(
-                'Total: ${widget.expenses.fold<double>(0, (previousValue, element) => previousValue + element.amount)}'),
+            Text('Total: ${total.toStringAsFixed(2)} \$')
           ],
         ),
       ),
