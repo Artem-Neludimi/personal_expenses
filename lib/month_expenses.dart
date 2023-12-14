@@ -53,7 +53,7 @@ class MonthExpenses extends StatelessWidget {
                   children: [
                     Text(expenses[index].type),
                     const SizedBox(width: 8),
-                    Text('${date.month}/${date.day}/${date.year}'),
+                    Text('${date.day}/${date.month}/${date.year}'),
                   ],
                 ),
                 trailing: Text('${expenses[index].amount} \$'),
