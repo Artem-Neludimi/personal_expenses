@@ -141,17 +141,6 @@ enum ExpenseType {
   other,
   ;
 
-  factory ExpenseType.fromString(String value) => switch (value.toLowerCase()) {
-        'food' => ExpenseType.food,
-        'junkFood' => ExpenseType.junkFood,
-        'transport' => ExpenseType.transport,
-        'bills' => ExpenseType.bills,
-        'entertainment' => ExpenseType.entertainment,
-        'technic' => ExpenseType.technic,
-        'other' => ExpenseType.other,
-        _ => ExpenseType.other,
-      };
-
   String get name => switch (this) {
         ExpenseType.food => 'Food',
         ExpenseType.junkFood => 'Junk food',
