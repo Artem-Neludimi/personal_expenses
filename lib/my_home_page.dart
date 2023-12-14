@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:personal_expenses/main.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'db/database.dart';
+import 'main.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
@@ -24,19 +25,13 @@ class MyHomePage extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 );
               }
+              final groupedExpenses = _buildMonthExpanse(snapshot.data!);
+
               return ListView.builder(
-                itemCount: snapshot.data!.length,
+                itemCount: groupedExpenses.length,
                 padding: const EdgeInsets.only(bottom: 16),
                 itemBuilder: (BuildContext context, int index) {
-                  final date = snapshot.data![index].date;
-                  final dateStr = '${date.day}/${date.month}/${date.year}';
-                  return Card(
-                    child: ListTile(
-                      title: Text(snapshot.data![index].name),
-                      subtitle: Text('${snapshot.data![index].type} - $dateStr'),
-                      trailing: Text('${snapshot.data![index].amount} \$'),
-                    ),
-                  );
+                  return groupedExpenses[index];
                 },
               );
             }),
@@ -45,9 +40,9 @@ class MyHomePage extends StatelessWidget {
         onPressed: () {
           db.expenseDao.insertExpense(ExpensesCompanion.insert(
             id: UniqueKey().toString(),
-            name: 'fnew;eewoinewweinonweieninffweinewfioniowefnniowefinofweinfoweinowfeinowefwnieniowef',
-            type: ExpenseType.junkFood.name,
-            amount: 10,
+            name: 'fnew;',
+            type: ExpenseType.other.name,
+            amount: 100,
             date: DateTime.now(),
           ));
         },
@@ -55,6 +50,90 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
+
+  List<Widget> _buildMonthExpanse(List<Expense> expenses) {
+    final List<Widget> result = [];
+    final Map<String, List<Expense>> groupedExpenses = {};
+    for (var element in expenses) {
+      final key = '${element.date.month}/${element.date.year}';
+      if (groupedExpenses.containsKey(key)) {
+        groupedExpenses[key]!.add(element);
+      } else {
+        groupedExpenses[key] = [element];
+      }
+    }
+    groupedExpenses.forEach((key, value) {
+      result.add(_Chart(date: key, expenses: value));
+    });
+    return result;
+  }
+}
+
+class _Chart extends StatefulWidget {
+  const _Chart({required this.date, required this.expenses});
+
+  final String date;
+  final List<Expense> expenses;
+
+  @override
+  _ChartState createState() => _ChartState();
+}
+
+class _ChartState extends State<_Chart> {
+  late List<_ChartData> data;
+  late TooltipBehavior _tooltip;
+
+  @override
+  void initState() {
+    _tooltip = TooltipBehavior(enable: true);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    data = [
+      for (var element in ExpenseType.values)
+        _ChartData(
+          element.name,
+          widget.expenses
+              .where((element2) => element2.type == element.name)
+              .fold<double>(0, (previousValue, element) => previousValue + element.amount),
+        )
+    ];
+
+    return Card(
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(widget.date, style: Theme.of(context).textTheme.titleLarge),
+            SfCircularChart(
+              tooltipBehavior: _tooltip,
+              series: [
+                DoughnutSeries<_ChartData, String>(
+                  dataSource: data,
+                  xValueMapper: (_ChartData data, _) => data.x,
+                  yValueMapper: (_ChartData data, _) => data.y,
+                  name: widget.date,
+                )
+              ],
+            ),
+            Text(
+                'Total: ${widget.expenses.fold<double>(0, (previousValue, element) => previousValue + element.amount)}'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ChartData {
+  _ChartData(this.x, this.y);
+
+  final String x;
+  final double y;
 }
 
 enum ExpenseType {
@@ -85,3 +164,17 @@ enum ExpenseType {
         ExpenseType.other => 'Other',
       };
 }
+// [
+//                   OrdinalGroup(
+//                     id: '1',
+//                     data: [
+//                       for (var element in ExpenseType.values)
+//                         OrdinalData(
+//                           domain: element.name,
+//                           measure: expenses
+//                               .where((element2) => element2.type == element.name)
+//                               .fold<double>(0, (previousValue, element) => previousValue + element.amount),
+//                         )
+//                     ],
+//                   )
+//                 ],
