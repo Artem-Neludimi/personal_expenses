@@ -4,6 +4,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'add_expenses.dart';
 import 'db/database.dart';
 import 'main.dart';
+import 'month_expenses.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
@@ -24,6 +25,11 @@ class MyHomePage extends StatelessWidget {
               if (!snapshot.hasData) {
                 return const Center(
                   child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.data!.isEmpty) {
+                return const Center(
+                  child: Text('Add your first expense!'),
                 );
               }
               final groupedExpenses = _buildMonthExpanse(snapshot.data!);
@@ -105,7 +111,18 @@ class _ChartState extends State<_Chart> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.date, style: Theme.of(context).textTheme.titleLarge),
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MonthExpenses(expenses: widget.expenses),
+                    ),
+                  );
+                },
+                child: Text(widget.date, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+              ),
+            ),
             SfCircularChart(
               tooltipBehavior: _tooltip,
               series: [
