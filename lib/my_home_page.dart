@@ -76,7 +76,7 @@ class MyHomePage extends StatelessWidget {
       }
     }
     groupedExpenses.forEach((key, value) {
-      result.add(_Chart(date: key, expenses: value, incomes: groupedIncomes[key]));
+      result.add(_Chart(date: key, expenses: value, incomes: groupedIncomes[key] ?? []));
     });
     return result;
   }
@@ -87,7 +87,7 @@ class _Chart extends StatefulWidget {
 
   final String date;
   final List<Expense> expenses;
-  final List<Income>? incomes;
+  final List<Income> incomes;
 
   @override
   _ChartState createState() => _ChartState();
@@ -115,8 +115,7 @@ class _ChartState extends State<_Chart> {
         )
     ];
     final total = widget.expenses.fold<double>(0, (previousValue, element) => previousValue + element.amount);
-    final totalIncomes =
-        widget.incomes?.fold<double>(0, (previousValue, element) => previousValue + element.amount) ?? 0;
+    final totalIncomes = widget.incomes.fold<double>(0, (previousValue, element) => previousValue + element.amount);
 
     return Card(
       elevation: 5,
@@ -130,7 +129,7 @@ class _ChartState extends State<_Chart> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => MonthExpenses(expenses: widget.expenses),
+                      builder: (context) => MonthExpenses(expenses: widget.expenses, incomes: widget.incomes),
                     ),
                   );
                 },
@@ -148,10 +147,9 @@ class _ChartState extends State<_Chart> {
               ],
             ),
             Text('Total expenses: ${total.toStringAsFixed(2)} \$'),
-            if (widget.incomes != null)
-              Text(
-                'Total incomes: $totalIncomes \$',
-              )
+            Text(
+              'Total incomes: $totalIncomes \$',
+            )
           ],
         ),
       ),
