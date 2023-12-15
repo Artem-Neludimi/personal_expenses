@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personal_expenses/add_income.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'add_expenses.dart';
@@ -19,36 +20,42 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-        child: StreamBuilder<List<Expense>>(
-            stream: db.expenseDao.watchAllExpenses(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Text('Add your first expense!'),
-                );
-              }
-              final groupedExpenses = _buildMonthExpanse(snapshot.data!);
+        child: StreamBuilder<List<Income>>(
+          stream: db.incomeDao.watchAllIncomes(),
+          builder: (context, incomeSnapshot) {
+            return StreamBuilder<List<Expense>>(
+              stream: db.expenseDao.watchAllExpenses(),
+              builder: (context, expenseSnapshot) {
+                if (!expenseSnapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (expenseSnapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text('Add your first expense!'),
+                  );
+                }
+                final groupedExpenses = _buildMonthExpanse(expenseSnapshot.data!, incomeSnapshot.data ?? []);
 
-              return ListView.builder(
-                itemCount: groupedExpenses.length,
-                reverse: true,
-                padding: const EdgeInsets.only(bottom: 16),
-                itemBuilder: (BuildContext context, int index) {
-                  return groupedExpenses[index];
-                },
-              );
-            }),
+                return ListView.builder(
+                  itemCount: groupedExpenses.length,
+                  reverse: true,
+                  padding: const EdgeInsets.only(bottom: 16),
+                  itemBuilder: (BuildContext context, int index) {
+                    return groupedExpenses[index];
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
       floatingActionButton: const _Floating(),
     );
   }
 
-  List<Widget> _buildMonthExpanse(List<Expense> expenses) {
+  List<Widget> _buildMonthExpanse(List<Expense> expenses, List<Income> incomes) {
     final List<Widget> result = [];
     final Map<String, List<Expense>> groupedExpenses = {};
     for (var element in expenses) {
@@ -59,18 +66,28 @@ class MyHomePage extends StatelessWidget {
         groupedExpenses[key] = [element];
       }
     }
+    final Map<String, List<Income>> groupedIncomes = {};
+    for (var element in incomes) {
+      final key = '${element.date.month}/${element.date.year}';
+      if (groupedIncomes.containsKey(key)) {
+        groupedIncomes[key]!.add(element);
+      } else {
+        groupedIncomes[key] = [element];
+      }
+    }
     groupedExpenses.forEach((key, value) {
-      result.add(_Chart(date: key, expenses: value));
+      result.add(_Chart(date: key, expenses: value, incomes: groupedIncomes[key]));
     });
     return result;
   }
 }
 
 class _Chart extends StatefulWidget {
-  const _Chart({required this.date, required this.expenses});
+  const _Chart({required this.date, required this.expenses, required this.incomes});
 
   final String date;
   final List<Expense> expenses;
+  final List<Income>? incomes;
 
   @override
   _ChartState createState() => _ChartState();
@@ -98,6 +115,8 @@ class _ChartState extends State<_Chart> {
         )
     ];
     final total = widget.expenses.fold<double>(0, (previousValue, element) => previousValue + element.amount);
+    final totalIncomes =
+        widget.incomes?.fold<double>(0, (previousValue, element) => previousValue + element.amount) ?? 0;
 
     return Card(
       elevation: 5,
@@ -128,7 +147,11 @@ class _ChartState extends State<_Chart> {
                 )
               ],
             ),
-            Text('Total: ${total.toStringAsFixed(2)} \$')
+            Text('Total expenses: ${total.toStringAsFixed(2)} \$'),
+            if (widget.incomes != null)
+              Text(
+                'Total incomes: $totalIncomes \$',
+              )
           ],
         ),
       ),
@@ -158,7 +181,9 @@ class _Floating extends StatelessWidget {
                 ),
                 ListTile(
                   title: const Text('Add income'),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const AddIncomes()));
+                  },
                 ),
               ],
             ),
