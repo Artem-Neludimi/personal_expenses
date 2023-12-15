@@ -44,12 +44,7 @@ class MyHomePage extends StatelessWidget {
               );
             }),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddExpenses()));
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: const _Floating(),
     );
   }
 
@@ -137,6 +132,40 @@ class _ChartState extends State<_Chart> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _Floating extends StatelessWidget {
+  const _Floating();
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        showBottomSheet(
+          context: context,
+          builder: (_) => Material(
+            color: Colors.blue,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: const Text('Add expense'),
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const AddExpenses()));
+                  },
+                ),
+                ListTile(
+                  title: const Text('Add income'),
+                  onTap: () {},
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      child: const Icon(Icons.add),
     );
   }
 }
